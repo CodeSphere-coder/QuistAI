@@ -147,6 +147,144 @@ export const challenges: Challenge[] = [
     xpReward: 15,
     difficulty: 'Easy'
   },
+  {
+    id: 'l1-c4',
+    title: 'Green Triangle',
+    level: 1,
+    levelName: 'Shapes & Colors',
+    description: 'Create a green triangle pointing upward. Use CSS borders to create the triangle shape.',
+    targetExplanation: 'A green triangle created using CSS border technique, 100px wide at the base.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .triangle {
+    /* Add your styles here */
+  }
+</style>
+
+<div class="triangle"></div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid #22c55e;
+  }
+</style>
+
+<div class="triangle"></div>`,
+    xpReward: 15,
+    difficulty: 'Easy'
+  },
+  {
+    id: 'l1-c5',
+    title: 'Yellow Diamond',
+    level: 1,
+    levelName: 'Shapes & Colors',
+    description: 'Create a yellow diamond shape rotated 45 degrees. Size: 100x100 pixels.',
+    targetExplanation: 'A yellow square rotated 45 degrees to create a diamond shape.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .diamond {
+    /* Add your styles here */
+  }
+</style>
+
+<div class="diamond"></div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .diamond {
+    width: 100px;
+    height: 100px;
+    background: #eab308;
+    transform: rotate(45deg);
+  }
+</style>
+
+<div class="diamond"></div>`,
+    xpReward: 15,
+    difficulty: 'Easy'
+  },
+  {
+    id: 'l1-c6',
+    title: 'Rainbow Circle',
+    level: 1,
+    levelName: 'Shapes & Colors',
+    description: 'Create a circle with a rainbow gradient border. The circle should be 120px in diameter with a 10px border.',
+    targetExplanation: 'A circle with a conic gradient border creating a rainbow effect.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .rainbow-circle {
+    /* Add your styles here */
+  }
+</style>
+
+<div class="rainbow-circle"></div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .rainbow-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 10px solid;
+    border-image: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #8b5cf6, #ec4899, #ef4444) 1;
+    background: transparent;
+  }
+</style>
+
+<div class="rainbow-circle"></div>`,
+    xpReward: 20,
+    difficulty: 'Medium'
+  },
 
   // Level 2: Layout & Positioning
   {
@@ -363,6 +501,247 @@ export const challenges: Challenge[] = [
   <div class="circle top-right"></div>
   <div class="circle bottom-left"></div>
   <div class="circle bottom-right"></div>
+</div>`,
+    xpReward: 25,
+    difficulty: 'Medium'
+  },
+  {
+    id: 'l2-c4',
+    title: 'Centered Grid',
+    level: 2,
+    levelName: 'Layout & Positioning',
+    description: 'Create a 2x2 grid of colored squares, each 60x60 pixels. Colors: orange, purple, cyan, green. Center the grid on the page.',
+    targetExplanation: 'A 2x2 grid layout using CSS Grid, centered on the page with gap spacing.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .grid {
+    /* Add your styles here */
+  }
+  
+  .box {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .orange { background: #f97316; }
+  .purple { background: #8b5cf6; }
+  .cyan { background: #06b6d4; }
+  .green { background: #22c55e; }
+</style>
+
+<div class="grid">
+  <div class="box orange"></div>
+  <div class="box purple"></div>
+  <div class="box cyan"></div>
+  <div class="box green"></div>
+</div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .box {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+  }
+  
+  .orange { background: #f97316; }
+  .purple { background: #8b5cf6; }
+  .cyan { background: #06b6d4; }
+  .green { background: #22c55e; }
+</style>
+
+<div class="grid">
+  <div class="box orange"></div>
+  <div class="box purple"></div>
+  <div class="box cyan"></div>
+  <div class="box green"></div>
+</div>`,
+    xpReward: 25,
+    difficulty: 'Medium'
+  },
+  {
+    id: 'l2-c5',
+    title: 'Overlapping Circles',
+    level: 2,
+    levelName: 'Layout & Positioning',
+    description: 'Create three overlapping circles using z-index. Colors: red (back), blue (middle), green (front). Each circle is 100px in diameter.',
+    targetExplanation: 'Three circles positioned to overlap using negative margins and z-index for layering.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .container {
+    position: relative;
+  }
+  
+  .circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+  }
+  
+  .red { background: #ef4444; }
+  .blue { background: #3b82f6; }
+  .green { background: #22c55e; }
+</style>
+
+<div class="container">
+  <div class="circle red"></div>
+  <div class="circle blue"></div>
+  <div class="circle green"></div>
+</div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .container {
+    position: relative;
+    width: 200px;
+    height: 100px;
+  }
+  
+  .circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+  }
+  
+  .red { 
+    background: #ef4444; 
+    left: 0;
+    z-index: 1;
+  }
+  .blue { 
+    background: #3b82f6; 
+    left: 50px;
+    z-index: 2;
+  }
+  .green { 
+    background: #22c55e; 
+    left: 100px;
+    z-index: 3;
+  }
+</style>
+
+<div class="container">
+  <div class="circle red"></div>
+  <div class="circle blue"></div>
+  <div class="circle green"></div>
+</div>`,
+    xpReward: 30,
+    difficulty: 'Hard'
+  },
+  {
+    id: 'l2-c6',
+    title: 'Diagonal Lineup',
+    level: 2,
+    levelName: 'Layout & Positioning',
+    description: 'Create four small squares (50px each) arranged diagonally from top-left to bottom-right. Use absolute positioning within a 200x200 container.',
+    targetExplanation: 'Four squares positioned absolutely along a diagonal line using calculated positions.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    border: 2px dashed #4b5563;
+    border-radius: 12px;
+  }
+  
+  .square {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background: #8b5cf6;
+  }
+</style>
+
+<div class="container">
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+</div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    border: 2px dashed #4b5563;
+    border-radius: 12px;
+  }
+  
+  .square {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    background: #8b5cf6;
+    border-radius: 4px;
+  }
+  
+  .square:nth-child(1) { top: 0; left: 0; }
+  .square:nth-child(2) { top: 50px; left: 50px; }
+  .square:nth-child(3) { top: 100px; left: 100px; }
+  .square:nth-child(4) { top: 150px; left: 150px; }
+</style>
+
+<div class="container">
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
+  <div class="square"></div>
 </div>`,
     xpReward: 25,
     difficulty: 'Medium'
@@ -615,6 +994,130 @@ export const challenges: Challenge[] = [
 <span class="badge">NEW</span>`,
     xpReward: 20,
     difficulty: 'Easy'
+  },
+  {
+    id: 'l3-c5',
+    title: 'Toggle Switch',
+    level: 3,
+    levelName: 'Mini UI Components',
+    description: 'Create a toggle switch component: a rounded rectangle with a sliding circle indicator. Default state: off (left side).',
+    targetExplanation: 'A toggle switch with a background track and a circular slider that moves from left to right.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .toggle {
+    /* Add container styles */
+  }
+  
+  .slider {
+    /* Add slider styles */
+  }
+</style>
+
+<div class="toggle">
+  <div class="slider"></div>
+</div>`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .toggle {
+    width: 60px;
+    height: 30px;
+    background: #262640;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    border: 2px solid #3b3b5c;
+  }
+  
+  .slider {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: transform 0.3s;
+  }
+</style>
+
+<div class="toggle">
+  <div class="slider"></div>
+</div>`,
+    xpReward: 25,
+    difficulty: 'Medium'
+  },
+  {
+    id: 'l3-c6',
+    title: 'Input Field',
+    level: 3,
+    levelName: 'Mini UI Components',
+    description: 'Create a styled input field with rounded corners, padding, and a subtle border. Placeholder text: "Enter your name"',
+    targetExplanation: 'An input field with modern styling: rounded corners, padding, border, and placeholder text.',
+    starterCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .input {
+    /* Add your styles here */
+  }
+</style>
+
+<input type="text" class="input" placeholder="Enter your name" />`,
+    solutionCode: `<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+  }
+  
+  .input {
+    width: 300px;
+    padding: 12px 16px;
+    font-size: 16px;
+    color: white;
+    background: #262640;
+    border: 2px solid #3b3b5c;
+    border-radius: 12px;
+    outline: none;
+  }
+  
+  .input::placeholder {
+    color: #9ca3af;
+  }
+  
+  .input:focus {
+    border-color: #8b5cf6;
+  }
+</style>
+
+<input type="text" class="input" placeholder="Enter your name" />`,
+    xpReward: 20,
+    difficulty: 'Easy'
   }
 ];
 
@@ -622,10 +1125,55 @@ export const getLevelChallenges = (level: number): Challenge[] => {
   return challenges.filter(c => c.level === level);
 };
 
-export const getRandomChallenge = (level: number): Challenge | undefined => {
+// Track shown challenges per level to ensure we cycle through all
+const shownChallengesByLevel = new Map<number, string[]>();
+const lastChallengeByLevel = new Map<number, string>();
+
+export const getRandomChallenge = (level: number, excludeId?: string): Challenge | undefined => {
   const levelChallenges = getLevelChallenges(level);
   if (levelChallenges.length === 0) return undefined;
-  return levelChallenges[Math.floor(Math.random() * levelChallenges.length)];
+  
+  // Get list of shown challenges for this level
+  const shown = shownChallengesByLevel.get(level) || [];
+  const lastChallenge = lastChallengeByLevel.get(level);
+  
+  // Filter out the last shown challenge and excluded challenge
+  let availableChallenges = levelChallenges.filter(c => {
+    if (excludeId && c.id === excludeId) return false;
+    if (lastChallenge && c.id === lastChallenge) return false;
+    return true;
+  });
+  
+  // If we've shown all challenges, reset and allow all (except last shown)
+  if (shown.length >= levelChallenges.length) {
+    shownChallengesByLevel.set(level, []);
+    // Still exclude the last one to avoid immediate repeat
+    availableChallenges = levelChallenges.filter(c => c.id !== lastChallenge);
+  }
+  
+  // If no available challenges (edge case), use all challenges
+  if (availableChallenges.length === 0) {
+    availableChallenges = levelChallenges;
+  }
+  
+  // Pick a random challenge from available ones
+  const randomIndex = Math.floor(Math.random() * availableChallenges.length);
+  const selectedChallenge = availableChallenges[randomIndex];
+  
+  // Track that we've shown this challenge
+  if (selectedChallenge) {
+    const updatedShown = [...shown, selectedChallenge.id];
+    shownChallengesByLevel.set(level, updatedShown);
+    lastChallengeByLevel.set(level, selectedChallenge.id);
+  }
+  
+  return selectedChallenge;
+};
+
+// Reset tracking for a level (useful when switching levels)
+export const resetChallengeTracking = (level: number) => {
+  shownChallengesByLevel.delete(level);
+  lastChallengeByLevel.delete(level);
 };
 
 export const getChallengeById = (id: string): Challenge | undefined => {

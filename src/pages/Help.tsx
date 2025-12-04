@@ -13,6 +13,12 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 
+// Video configuration - Update this with your video URL
+// For YouTube: Extract the video ID from the URL (e.g., from https://www.youtube.com/watch?v=VIDEO_ID)
+// For other platforms: Use the embed URL directly
+const VIDEO_ID = 'G8r00ZNopTE'; // Replace with your video ID
+const VIDEO_PLATFORM = 'youtube'; // 'youtube' or 'custom'
+
 const Help = () => {
   const steps = [
     {
@@ -119,23 +125,62 @@ const Help = () => {
             </p>
           </motion.div>
 
-          {/* Video Placeholder */}
+          {/* Video Section */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-card rounded-2xl p-8 mb-16 text-center"
+            className="glass-card rounded-2xl p-8 mb-16"
           >
-            <div className="aspect-video max-w-2xl mx-auto bg-muted rounded-xl flex items-center justify-center mb-4">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center cursor-pointer"
-              >
-                <PlayCircle size={40} className="text-primary-foreground" />
-              </motion.div>
+            <div className="text-center max-w-2xl mx-auto mb-6">
+              <h3 className="text-xl font-bold mb-2">Quick Start Guide Video</h3>
+              <p className="text-muted-foreground text-sm">
+                Watch this video to learn how to get started with CSS challenges
+              </p>
             </div>
-            <p className="text-muted-foreground">
-              Watch a quick intro video (coming soon!)
-            </p>
+            
+            {/* Video Embed */}
+            <div className="aspect-video max-w-4xl mx-auto bg-black rounded-xl overflow-hidden shadow-2xl mb-6">
+              <iframe
+                width="100%"
+                height="100%"
+                src={
+                  VIDEO_PLATFORM === 'youtube'
+                    ? `https://www.youtube.com/embed/${VIDEO_ID}?rel=0&modestbranding=1&autoplay=0`
+                    : VIDEO_ID
+                }
+                title="CSS Challenge Tutorial"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-4 text-left space-y-2 max-w-2xl mx-auto">
+              <p className="text-sm font-semibold text-foreground mb-2">This video covers:</p>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <ChevronRight size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <span>How to navigate the challenge interface</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <ChevronRight size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <span>Understanding the target design and your result preview</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <ChevronRight size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <span>Using the code editor and live preview features</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <ChevronRight size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <span>Getting hints from the AI mentor when you're stuck</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <ChevronRight size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <span>Earning XP and progressing through levels</span>
+                </li>
+              </ul>
+            </div>
           </motion.div>
 
           {/* Steps */}

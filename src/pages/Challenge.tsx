@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -17,7 +17,7 @@ import CodeEditor from '@/components/CodeEditor';
 import LivePreview from '@/components/LivePreview';
 import SuccessModal from '@/components/SuccessModal';
 import AIChat from '@/components/AIChat';
-import { getRandomChallenge, Challenge, levels } from '@/data/challenges';
+import { getRandomChallenge, Challenge, levels, resetChallengeTracking } from '@/data/challenges';
 import { markChallengeComplete, isChallengeCompleted, loadProgress } from '@/lib/progress';
 import { toast } from '@/hooks/use-toast';
 import { getChallengeImage } from '@/lib/gemini';
@@ -29,6 +29,8 @@ const ChallengePage = () => {
   
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [code, setCode] = useState('');
+  const [validCode, setValidCode] = useState(''); // Only valid code that runs without errors
+  const [codeError, setCodeError] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [showSolution, setShowSolution] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -64,13 +66,13 @@ const ChallengePage = () => {
   }, [challenge]);
 
   const loadResultImage = useCallback(() => {
-    if (!challenge) return;
+    if (!challenge || !validCode) return;
     
     setIsLoadingResultImage(true);
     try {
-      // Generate image based on current code (synchronously)
+      // Generate image based on valid code (synchronously)
       const imageUrl = getChallengeImage(
-        `result-${challenge.id}-${code.substring(0, 50)}`, // Use code hash for caching
+        `result-${challenge.id}-${validCode.substring(0, 50)}`, // Use code hash for caching
         {
           prompt: `User's current code result: ${challenge.description}`,
           challengeTitle: `${challenge.title} - Your Result`,
@@ -83,13 +85,98 @@ const ChallengePage = () => {
     } finally {
       setIsLoadingResultImage(false);
     }
-  }, [challenge, code]);
+  }, [challenge, validCode]);
 
-  const loadNewChallenge = useCallback(() => {
-    const newChallenge = getRandomChallenge(levelNum);
+  // Validate code and check for errors
+  const validateCode = useCallback((codeToValidate: string): { isValid: boolean; error: string | null } => {
+    if (!codeToValidate || codeToValidate.trim() === '') {
+      return { isValid: false, error: 'Code is empty' };
+    }
+
+    try {
+      // Basic HTML structure validation
+      const hasHtmlTags = /<[^>]+>/g.test(codeToValidate);
+      if (!hasHtmlTags) {
+        return { isValid: false, error: 'Missing HTML tags' };
+      }
+
+      // Check for unclosed CSS braces (most common error)
+      const styleContent = codeToValidate.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+      if (styleContent) {
+        const cssContent = styleContent[1];
+        // Check for unclosed braces
+        const openBraces = (cssContent.match(/{/g) || []).length;
+        const closeBraces = (cssContent.match(/}/g) || []).length;
+        if (openBraces !== closeBraces) {
+          return { isValid: false, error: `Unclosed CSS braces (${openBraces} open, ${closeBraces} close)` };
+        }
+        
+        // Check for unclosed quotes in CSS values
+        const singleQuotes = (cssContent.match(/'/g) || []).length;
+        const doubleQuotes = (cssContent.match(/"/g) || []).length;
+        if (singleQuotes % 2 !== 0) {
+          return { isValid: false, error: 'Unclosed single quotes in CSS' };
+        }
+        if (doubleQuotes % 2 !== 0) {
+          return { isValid: false, error: 'Unclosed double quotes in CSS' };
+        }
+      }
+
+      // Try to create a test document to see if it parses
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(codeToValidate, 'text/html');
+      const parseErrors = doc.querySelectorAll('parsererror');
+      if (parseErrors.length > 0) {
+        const errorText = parseErrors[0]?.textContent || 'HTML parsing error';
+        return { isValid: false, error: `HTML parsing error: ${errorText.substring(0, 50)}` };
+      }
+
+      // Check for common syntax errors
+      // Check for unclosed style tag
+      const styleOpenCount = (codeToValidate.match(/<style[^>]*>/gi) || []).length;
+      const styleCloseCount = (codeToValidate.match(/<\/style>/gi) || []).length;
+      if (styleOpenCount !== styleCloseCount) {
+        return { isValid: false, error: 'Unclosed <style> tag' };
+      }
+
+      return { isValid: true, error: null };
+    } catch (error) {
+      return { isValid: false, error: `Code validation error: ${error instanceof Error ? error.message : 'Unknown error'}` };
+    }
+  }, []);
+
+  // Track if code has been run (to know when to allow real-time updates)
+  const hasRunCodeRef = useRef<boolean>(false);
+  
+  // Update result in real-time after code has been run (if code is still valid)
+  useEffect(() => {
+    // Only update if user has run code before and code is different
+    if (hasRunCodeRef.current && code !== validCode) {
+      // Validate the new code
+      const validation = validateCode(code);
+      if (validation.isValid) {
+        // Code is valid - update result in real-time
+        setValidCode(code);
+        setCodeError(null);
+      } else {
+        // Code has errors - clear result and show error
+        setValidCode('');
+        setCodeError(validation.error);
+      }
+    }
+  }, [code, validCode, validateCode]);
+
+  const loadNewChallenge = useCallback((excludeId?: string) => {
+    // Get a new challenge, excluding the current one if provided
+    const newChallenge = getRandomChallenge(levelNum, excludeId);
     if (newChallenge) {
       setChallenge(newChallenge);
-      setCode(newChallenge.starterCode);
+      const starterCode = newChallenge.starterCode;
+      setCode(starterCode);
+      // Don't show result until user clicks Run Code
+      setValidCode('');
+      setCodeError(null);
+      hasRunCodeRef.current = false; // Reset flag for new challenge
       setAttempts(0);
       setShowSolution(false);
       setIsCompleted(isChallengeCompleted(newChallenge.id));
@@ -99,8 +186,15 @@ const ChallengePage = () => {
   }, [levelNum]);
 
   useEffect(() => {
+    // Reset tracking when level changes
+    resetChallengeTracking(levelNum);
     loadNewChallenge();
-  }, [loadNewChallenge]);
+  }, [levelNum, loadNewChallenge]);
+  
+  // Load new challenge when explicitly requested (excludes current challenge)
+  const handleLoadNewChallenge = useCallback(() => {
+    loadNewChallenge(challenge?.id);
+  }, [loadNewChallenge, challenge?.id]);
 
   // Load target image when challenge changes
   useEffect(() => {
@@ -109,25 +203,39 @@ const ChallengePage = () => {
     }
   }, [challenge?.id, loadTargetImage]);
 
-  // Load result image when code changes (with debounce)
+  // Load result image only when valid code changes
   useEffect(() => {
-    if (code && challenge) {
-      const timer = setTimeout(() => {
-        loadResultImage();
-      }, 500); // Debounce for 0.5 second (faster since it's synchronous now)
-
-      return () => clearTimeout(timer);
+    if (validCode && challenge) {
+      loadResultImage();
+    } else {
+      setResultImage(null);
     }
-  }, [code, challenge?.id, loadResultImage]);
+  }, [validCode, challenge?.id, loadResultImage]);
 
   const handleRunCode = () => {
     setAttempts(prev => prev + 1);
+    hasRunCodeRef.current = true; // Mark that code has been run
     
-    // Simple validation - in production this would compare with target
-    toast({
-      title: "Code Updated! 🎨",
-      description: "Check the preview panel to see your result.",
-    });
+    // Validate code before showing result
+    const validation = validateCode(code);
+    if (validation.isValid) {
+      // Code is valid - set it as valid code to show result
+      setValidCode(code);
+      setCodeError(null);
+      toast({
+        title: "Code Updated! 🎨",
+        description: "Your code ran successfully! Check the preview panel.",
+      });
+    } else {
+      // Code has errors - clear valid code and show error
+      setValidCode('');
+      setCodeError(validation.error);
+      toast({
+        title: "Try Again! ⚠️",
+        description: validation.error || "There's an error in your code. Please fix it and try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleShowSolution = () => {
@@ -140,7 +248,12 @@ const ChallengePage = () => {
       return;
     }
     setShowSolution(true);
-    setCode(challenge?.solutionCode || '');
+    const solutionCode = challenge?.solutionCode || '';
+    setCode(solutionCode);
+    // Don't show result until user clicks Run Code (even for solution)
+    setValidCode('');
+    setCodeError(null);
+    hasRunCodeRef.current = false; // Reset so user needs to click Run Code
   };
 
   const handleMarkComplete = () => {
@@ -153,7 +266,7 @@ const ChallengePage = () => {
 
   const handleNextChallenge = () => {
     setShowSuccess(false);
-    loadNewChallenge();
+    handleLoadNewChallenge();
   };
 
   if (!challenge || !levelInfo) {
@@ -294,7 +407,7 @@ const ChallengePage = () => {
               <Button
                 variant="outline"
                 className="w-full justify-start gap-2"
-                onClick={loadNewChallenge}
+                onClick={handleLoadNewChallenge}
               >
                 <RefreshCw size={18} />
                 Try Different Challenge
@@ -371,9 +484,30 @@ const ChallengePage = () => {
                 />
               </div>
             )}
-            {/* Always show iframe behind the image */}
+            {/* Show iframe only with valid code (after Run Code is clicked), otherwise show message */}
             <div className="w-full h-full">
-              <LivePreview code={code} />
+              {validCode ? (
+                <LivePreview code={validCode} />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-muted/30 p-6">
+                  <div className="text-center">
+                    {codeError ? (
+                      <>
+                        <div className="text-4xl mb-3">⚠️</div>
+                        <p className="text-sm font-semibold text-destructive mb-1">Code Error</p>
+                        <p className="text-xs text-muted-foreground mb-3">{codeError}</p>
+                        <p className="text-xs text-muted-foreground">Fix the error and click "Run Code"</p>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="mx-auto mb-2 text-muted-foreground" size={32} />
+                        <p className="text-sm text-muted-foreground mb-1">Click "Run Code" to see your result</p>
+                        <p className="text-xs text-muted-foreground">Your code will be validated when you run it</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -391,7 +525,7 @@ const ChallengePage = () => {
         xpEarned={challenge.xpReward}
         challengeTitle={challenge.title}
         onNextChallenge={handleNextChallenge}
-        onRetry={loadNewChallenge}
+        onRetry={handleLoadNewChallenge}
       />
 
       {/* AI Chat Modal */}
