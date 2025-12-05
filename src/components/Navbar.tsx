@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Zap, Trophy, HelpCircle, Home, Gamepad2 } from 'lucide-react';
 import { loadProgress, getCurrentRank, getXPProgress } from '@/lib/progress';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const location = useLocation();
@@ -61,7 +62,7 @@ const Navbar = () => {
           })}
         </div>
 
-        {/* XP Display */}
+        {/* XP Display & Theme Toggle */}
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted">
             <span className="text-lg">{rank.icon}</span>
@@ -75,6 +76,8 @@ const Navbar = () => {
             <Zap size={16} className="text-primary" />
             <span className="font-bold text-sm">{progress.xp} XP</span>
           </motion.div>
+
+          <ThemeToggle />
         </div>
       </div>
     </motion.nav>

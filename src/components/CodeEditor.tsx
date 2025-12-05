@@ -1,4 +1,5 @@
 import Editor from '@monaco-editor/react';
+import { useTheme } from 'next-themes';
 
 interface CodeEditorProps {
   code: string;
@@ -6,6 +7,9 @@ interface CodeEditorProps {
 }
 
 const CodeEditor = ({ code, onChange }: CodeEditorProps) => {
+  const { theme } = useTheme();
+  const editorTheme = theme === 'dark' ? 'vs-dark' : 'vs';
+
   return (
     <div className="code-editor-container h-full">
       <Editor
@@ -13,7 +17,7 @@ const CodeEditor = ({ code, onChange }: CodeEditorProps) => {
         defaultLanguage="html"
         value={code}
         onChange={(value) => onChange(value || '')}
-        theme="vs-dark"
+        theme={editorTheme}
         options={{
           minimap: { enabled: false },
           fontSize: 14,

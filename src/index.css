@@ -6,6 +6,81 @@
 
 @layer base {
   :root {
+    /* Light gaming theme */
+    --background: 0 0% 100%;
+    --foreground: 230 25% 15%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 230 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 25% 15%;
+
+    /* Neon Cyan Primary */
+    --primary: 185 100% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Warm Orange Secondary */
+    --secondary: 25 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted light */
+    --muted: 230 10% 95%;
+    --muted-foreground: 230 15% 45%;
+
+    /* Purple Accent */
+    --accent: 270 70% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Success Green */
+    --success: 150 70% 45%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning Yellow */
+    --warning: 45 100% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 15% 85%;
+    --input: 230 15% 90%;
+    --ring: 185 100% 40%;
+
+    --radius: 1rem;
+
+    /* Custom game colors */
+    --neon-cyan: 185 100% 40%;
+    --neon-purple: 270 70% 55%;
+    --neon-orange: 25 100% 50%;
+    --neon-pink: 330 80% 55%;
+    --neon-green: 150 70% 45%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(185 100% 40%), hsl(270 70% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(25 100% 50%), hsl(330 80% 55%));
+    --gradient-success: linear-gradient(135deg, hsl(150 70% 45%), hsl(185 100% 40%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(230 10% 96%));
+    --gradient-hero: radial-gradient(ellipse at top, hsl(270 70% 90% / 0.5), transparent 50%),
+                     radial-gradient(ellipse at bottom right, hsl(185 100% 90% / 0.3), transparent 50%);
+
+    /* Glows */
+    --glow-cyan: 0 0 20px hsl(185 100% 40% / 0.3);
+    --glow-purple: 0 0 20px hsl(270 70% 55% / 0.3);
+    --glow-orange: 0 0 20px hsl(25 100% 50% / 0.3);
+
+    /* Sidebar (keeping for compatibility) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 230 25% 15%;
+    --sidebar-primary: 185 100% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 230 10% 92%;
+    --sidebar-accent-foreground: 230 25% 15%;
+    --sidebar-border: 230 15% 85%;
+    --sidebar-ring: 185 100% 40%;
+  }
+
+  .dark {
     /* Dark gaming theme */
     --background: 230 25% 8%;
     --foreground: 210 40% 98%;
@@ -46,8 +121,6 @@
     --border: 230 20% 20%;
     --input: 230 20% 18%;
     --ring: 185 100% 50%;
-
-    --radius: 1rem;
 
     /* Custom game colors */
     --neon-cyan: 185 100% 50%;
@@ -98,7 +171,11 @@
 
 @layer components {
   .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-white/10 shadow-xl;
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-xl;
+  }
+  
+  .dark .glass-card {
+    @apply border-white/10;
   }
 
   .neon-text-cyan {
@@ -161,7 +238,7 @@
   .level-card:hover {
     @apply border-primary/50;
     box-shadow: 0 0 30px hsl(var(--primary) / 0.3),
-                0 10px 40px hsl(230 25% 5% / 0.5);
+                0 10px 40px hsl(var(--background) / 0.8);
   }
 
   .xp-bar {
@@ -177,6 +254,10 @@
 
   .code-editor-container {
     @apply rounded-xl overflow-hidden border border-border;
+    box-shadow: inset 0 0 20px hsl(230 25% 95% / 0.3);
+  }
+  
+  .dark .code-editor-container {
     box-shadow: inset 0 0 30px hsl(230 25% 5% / 0.5);
   }
 
@@ -228,5 +309,13 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.5);
 }
