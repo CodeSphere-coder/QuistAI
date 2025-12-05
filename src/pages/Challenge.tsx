@@ -239,14 +239,6 @@ const ChallengePage = () => {
   };
 
   const handleShowSolution = () => {
-    if (attempts < 1 && !isCompleted) {
-      toast({
-        title: "Keep trying! 💪",
-        description: "Make at least one attempt before seeing the solution.",
-        variant: "destructive",
-      });
-      return;
-    }
     setShowSolution(true);
     const solutionCode = challenge?.solutionCode || '';
     setCode(solutionCode);
@@ -387,7 +379,6 @@ const ChallengePage = () => {
                 variant="outline"
                 className="w-full justify-start gap-2"
                 onClick={handleShowSolution}
-                disabled={attempts < 1 && !isCompleted}
               >
                 <Eye size={18} className="text-accent" />
                 Show Solution
