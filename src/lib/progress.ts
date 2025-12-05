@@ -1,4 +1,14 @@
+import { loadUser } from './user';
+
 const STORAGE_KEY = 'prabodha_progress';
+
+const getStorageKey = (): string => {
+  const user = loadUser();
+  if (user?.username) {
+    return `${STORAGE_KEY}_${user.username.toLowerCase()}`;
+  }
+  return STORAGE_KEY;
+};
 
 export interface Progress {
   xp: number;
@@ -31,8 +41,9 @@ export const getDefaultProgress = (): Progress => ({
 });
 
 export const loadProgress = (): Progress => {
+  const storageKey = getStorageKey();
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(storageKey);
     if (stored) {
       return JSON.parse(stored);
     }
@@ -43,8 +54,9 @@ export const loadProgress = (): Progress => {
 };
 
 export const saveProgress = (progress: Progress): void => {
+  const storageKey = getStorageKey();
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    localStorage.setItem(storageKey, JSON.stringify(progress));
   } catch (error) {
     console.error('Failed to save progress:', error);
   }
@@ -53,13 +65,13 @@ export const saveProgress = (progress: Progress): void => {
 export const addXP = (amount: number): Progress => {
   const progress = loadProgress();
   progress.xp += amount;
-  
+
   // Update streak
   const today = new Date().toDateString();
   if (progress.lastPlayedDate !== today) {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     if (progress.lastPlayedDate === yesterday.toDateString()) {
       progress.currentStreak += 1;
     } else if (progress.lastPlayedDate !== today) {
@@ -67,24 +79,24 @@ export const addXP = (amount: number): Progress => {
     }
     progress.lastPlayedDate = today;
   }
-  
+
   saveProgress(progress);
   return progress;
 };
 
 export const markChallengeComplete = (challengeId: string, xpReward: number): Progress => {
   const progress = loadProgress();
-  
+
   if (!progress.completedChallenges.includes(challengeId)) {
     progress.completedChallenges.push(challengeId);
     progress.xp += xpReward;
-    
+
     // Update streak
     const today = new Date().toDateString();
     if (progress.lastPlayedDate !== today) {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      
+
       if (progress.lastPlayedDate === yesterday.toDateString()) {
         progress.currentStreak += 1;
       } else {
@@ -92,10 +104,10 @@ export const markChallengeComplete = (challengeId: string, xpReward: number): Pr
       }
       progress.lastPlayedDate = today;
     }
-    
+
     saveProgress(progress);
   }
-  
+
   return progress;
 };
 
@@ -120,17 +132,17 @@ export const getNextRank = (xp: number): Rank | null => {
 export const getXPProgress = (xp: number): { current: number; max: number; percentage: number } => {
   const currentRank = getCurrentRank(xp);
   const nextRank = getNextRank(xp);
-  
+
   if (!nextRank) {
     return { current: xp, max: xp, percentage: 100 };
   }
-  
+
   const rangeStart = currentRank.minXP;
   const rangeEnd = nextRank.minXP;
   const current = xp - rangeStart;
   const max = rangeEnd - rangeStart;
   const percentage = Math.min((current / max) * 100, 100);
-  
+
   return { current, max, percentage };
 };
 

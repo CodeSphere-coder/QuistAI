@@ -9,6 +9,7 @@ import Levels from "./pages/Levels";
 import Challenge from "./pages/Challenge";
 import Leaderboard from "./pages/Leaderboard";
 import Help from "./pages/Help";
+import SignIn from "./pages/SignIn";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/signin" element={<SignIn />} />
             <Route path="/levels" element={<Levels />} />
             <Route path="/challenge/:level" element={<Challenge />} />
             <Route path="/leaderboard" element={<Leaderboard />} />

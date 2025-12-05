@@ -1,14 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Play, HelpCircle, Zap, Trophy, Target, Sparkles, Code2, Gamepad2 } from 'lucide-react';
+import { Play, HelpCircle, Zap, Trophy, Target, Sparkles, Code2, Gamepad2, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import XPProgress from '@/components/XPProgress';
-import { loadProgress } from '@/lib/progress';
+import { getDefaultProgress, loadProgress, type Progress } from '@/lib/progress';
+import { loadUser, type UserProfile } from '@/lib/user';
 
 const Index = () => {
-  const progress = loadProgress();
+  const [user, setUser] = useState<UserProfile | null>(loadUser());
+  const [progress, setProgress] = useState<Progress>(user ? loadProgress() : getDefaultProgress());
+
+  useEffect(() => {
+    setUser(loadUser());
+    setProgress(loadUser() ? loadProgress() : getDefaultProgress());
+  }, []);
 
   const features = [
     {
@@ -151,21 +158,7 @@ const Index = () => {
               </motion.div>
             </motion.div>
 
-            {/* Progress card (if user has progress) */}
-            {progress.xp > 0 && (
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                className="glass-card rounded-2xl p-6 max-w-md mx-auto"
-              >
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Zap className="text-primary" size={20} />
-                  Your Progress
-                </h3>
-                <XPProgress xp={progress.xp} />
-              </motion.div>
-            )}
+            {/* Progress display removed on home page per request */}
           </div>
         </div>
 
